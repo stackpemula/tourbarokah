@@ -1,0 +1,271 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins', sans-serif;
+}
+
+body{
+  background:#f5f7f6;
+  overflow-x:hidden;
+}
+
+/* HERO */
+
+.hero{
+  min-height:100vh;
+
+  background:
+  linear-gradient(
+    rgba(7,16,35,0.55),
+    rgba(7,16,35,0.75)
+  ),
+  url('../assets/walibarokah.jpg');
+
+  background-size:cover;
+  background-position:top%;
+  background-repeat:no-repeat;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  padding:40px 20px;
+
+  position:relative;
+}
+
+/* CONTAINER */
+
+.container{
+  width:100%;
+  max-width:520px;
+
+  position:relative;
+  z-index:2;
+}
+
+/* FORM CARD */
+
+.form-card{
+  background:rgba(255,255,255,0.12);
+
+  border:1px solid rgba(255,255,255,0.15);
+
+  backdrop-filter:blur(14px);
+
+  border-radius:28px;
+
+  padding:32px;
+
+  color:white;
+
+  box-shadow:0 15px 40px rgba(0,0,0,0.25);
+
+  animation:fadeUp 1s ease;
+}
+
+/* BADGE */
+
+.badge{
+  background:#22c58b;
+
+  padding:8px 20px;
+
+  border-radius:999px;
+
+  display:inline-block;
+
+  margin-bottom:20px;
+
+  font-size:13px;
+  font-weight:600;
+
+  box-shadow:0 10px 20px rgba(34,197,139,0.3);
+}
+
+/* TITLE */
+
+.form-card h1{
+  font-size:38px;
+  line-height:1.2;
+
+  margin-bottom:14px;
+
+  font-weight:700;
+}
+
+/* SUBTITLE */
+
+.subtitle{
+  color:#f1f1f1;
+
+  line-height:1.7;
+
+  margin-bottom:28px;
+
+  font-size:14px;
+}
+
+/* FORM */
+
+form{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+/* INPUT GROUP */
+
+.input-group{
+  display:flex;
+  flex-direction:column;
+}
+
+.input-group label{
+  margin-bottom:8px;
+
+  font-size:14px;
+  font-weight:500;
+
+  color:#f1f1f1;
+}
+
+/* INPUT */
+
+.input-group input,
+.input-group select{
+  width:100%;
+
+  padding:14px 16px;
+
+  border:none;
+
+  border-radius:14px;
+
+  background:rgba(255,255,255,0.12);
+
+  color:white;
+
+  font-size:14px;
+
+  outline:none;
+
+  border:1px solid rgba(255,255,255,0.12);
+
+  transition:0.3s;
+}
+
+/* PLACEHOLDER */
+
+.input-group input::placeholder{
+  color:#dddddd;
+}
+
+/* SELECT OPTION */
+
+.input-group select option{
+  color:black;
+}
+
+/* FOCUS */
+
+.input-group input:focus,
+.input-group select:focus{
+  border:1px solid #22c58b;
+
+  background:rgba(255,255,255,0.18);
+}
+
+/* BUTTON */
+
+button{
+  margin-top:6px;
+
+  padding:15px;
+
+  border:none;
+
+  border-radius:16px;
+
+  background:#22c58b;
+
+  color:white;
+
+  font-size:15px;
+  font-weight:600;
+
+  cursor:pointer;
+
+  transition:0.3s;
+
+  box-shadow:0 10px 25px rgba(34,197,139,0.35);
+}
+
+button:hover{
+  transform:translateY(-4px);
+
+  box-shadow:0 15px 30px rgba(34,197,139,0.45);
+}
+
+/* STATUS */
+
+#status{
+  margin-top:20px;
+
+  text-align:center;
+
+  color:#ffffff;
+
+  font-size:14px;
+}
+
+/* ANIMATION */
+
+@keyframes fadeUp{
+
+  from{
+    opacity:0;
+    transform:translateY(40px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+  .container{
+    max-width:100%;
+  }
+
+  .form-card{
+    padding:25px 20px;
+  }
+
+  .form-card h1{
+    font-size:30px;
+  }
+
+  .subtitle{
+    font-size:14px;
+  }
+
+}
+/* FOOTER */
+
+footer{
+  background:#111;
+  color:white;
+  text-align:center;
+  padding:30px 20px;
+}
+
+footer p{
+  color:#ccc;
+}

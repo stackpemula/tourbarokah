@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Pendaftaran Tour Pondok</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!-- HERO -->
+
+  <section class="hero">
+
+    <div class="overlay"></div>
+
+    <div class="container">
+
+      <div class="form-card">
+
+        <span class="badge">
+          FORM PENDAFTARAN
+        </span>
+
+        <h1>
+          Pendaftaran Tour <br>
+          Pondok Pesantren
+        </h1>
+
+        <p class="subtitle">
+          Silakan lengkapi data peserta untuk mengikuti kegiatan
+          Tour Generus Garut
+        </p>
+
+        <form id="form">
+
+          <div class="input-group">
+            <label>Nama Lengkap</label>
+            <input type="text" id="nama" placeholder="Masukkan nama lengkap" required>
+          </div>
+
+          <div class="input-group">
+            <label>Jenis Kelamin</label>
+
+            <select id="jenisKelamin" required>
+              <option value="">Pilih Jenis Kelamin</option>
+              <option>Laki-laki</option>
+              <option>Perempuan</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label>Umur</label>
+            <input type="number" id="umur" placeholder="Masukkan umur" required>
+          </div>
+
+          <div class="input-group">
+            <label>Desa</label>
+            <input type="text" id="desa" placeholder="Masukkan desa masing-masing" required>
+          </div>
+
+          <div class="input-group">
+            <label>Kelompok</label>
+            <input type="text" id="kelompok" placeholder="Masukkan kelompok" required>
+          </div>
+
+          <div class="input-group">
+            <label>Nomor HP</label>
+            <input type="text" id="nohp" placeholder="Masukkan nomor HP" required>
+          </div>
+
+          <button type="submit">
+            Daftar Sekarang
+          </button>
+
+        </form>
+
+        <p id="status"></p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <footer>
+
+    <p>
+      @ GeGar Tour Pondok Pesantren Wali Barokah
+    </p>
+
+  </footer>
+
+
+  <script src="script.js"></script>
+
+</body>
+
+</html>
