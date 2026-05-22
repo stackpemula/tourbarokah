@@ -109,36 +109,55 @@ body{
 }
 
 .btn-primary,
-.btn-secondary{
-  padding:16px 28px;
+.btn-secondary,
+.btn-payment{
 
-  border-radius:14px;
+  padding:16px 30px;
+
+  border-radius:16px;
 
   text-decoration:none;
 
   font-weight:600;
 
-  transition:0.3s;
+  font-size:15px;
+
+  transition:0.3s ease;
+
+  min-width:220px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  backdrop-filter:blur(10px);
 }
+
+/* PRIMARY */
 
 .btn-primary{
-  background:#22c58b;
+  background:rgba(255,255,255,0.12);
   color:white;
+  border:1px solid rgba(255,255,255,0.18);
 }
-
+/* SECONDARY */
 .btn-secondary{
-  background:rgba(255,255,255,0.15);
-
+  background:rgba(255,255,255,0.12);
   color:white;
-
-  border:1px solid rgba(255,255,255,0.2);
+  border:1px solid rgba(255,255,255,0.18);
 }
-
+/* PAYMENT */
+.btn-payment{
+  background:rgba(255,255,255,0.12);
+  color:#ffffff;
+  border:1px solid rgba(255,255,255,0.18);
+}
+/* HOVER */
 .btn-primary:hover,
-.btn-secondary:hover{
-  transform:translateY(-3px);
+.btn-secondary:hover,
+.btn-payment:hover{
+  transform:translateY(-4px);
 }
-
 /* INFO */
 
 .info{
@@ -327,7 +346,7 @@ footer p{
 
   /* INFO */
 
-  .@media(max-width:768px){
+  @media(max-width:768px){
 
   .info{
     grid-template-columns:repeat(2,1fr);
@@ -509,5 +528,4 @@ footer p{
   .right-logo{
     right:10px;
   }
-
 }

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Pembayaran Tour Pondok</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+</head>
+
+<body>
+
+  <section class="payment">
+
+    <!-- BLUR -->
+
+    <div class="blur blur1"></div>
+    <div class="blur blur2"></div>
+
+    <!-- CARD -->
+
+    <div class="payment-card">
+
+      <span class="badge">
+        PEMBAYARAN TOUR
+      </span>
+
+      <h1>
+        Konfirmasi Pembayaran
+      </h1>
+
+      <p class="desc">
+        Silahkan lakukan pembayaran dengan akun bank atau 
+        e-walletnya masing-masing, isi data dan unggah bukti transfernya di 
+        form berikut untuk konfirmasi pembayaran Anda.
+      </p>
+
+      <!-- FORM -->
+
+      <form id="paymentForm">
+
+        <div class="input-group">
+
+          <label>Nama Lengkap</label>
+
+          <input
+            type="text"
+            id="nama"
+            placeholder="Masukkan nama lengkap"
+            required
+          >
+
+        </div>
+
+        <div class="input-group">
+
+          <label>Wilayah</label>
+
+          <select id="desa" required>
+
+            <option value="">
+              Pilih Wilayah
+            </option>
+
+            <option value="Bayongbong">
+              Bayongbong
+            </option>
+
+            <option value="Garut Barat">
+              Garut Barat
+            </option>
+
+            <option value="Garut Timur">
+              Garut Timur
+            </option>
+
+            <option value="Garut Utara">
+              Garut Utara
+            </option>
+
+          </select>
+
+        </div>
+
+        <div class="input-group">
+
+          <label>Kelompok</label>
+
+          <input
+            type="text"
+            id="kelompok"
+            placeholder="Masukkan kelompok"
+            required
+          >
+
+        </div>
+
+        <div class="input-group">
+
+          <label>Jenjang</label>
+
+          <select id="jenjang" required>
+
+            <option value="">
+              Pilih Jenjang
+            </option>
+
+            <option value="SD">
+              Pra Remaja
+            </option>
+
+            <option value="SMP">
+              Remaja
+            </option>
+
+            <option value="SMA">
+              Pra - Nikah
+            </option>
+
+          </select>
+
+        </div>
+
+        <div class="input-group">
+
+          <label>Upload Bukti Transfer</label>
+
+          <input
+            type="file"
+            id="bukti"
+            accept="image/*"
+            required
+          >
+
+        </div>
+
+        <button type="submit">
+          Kirim Pembayaran
+        </button>
+
+      </form>
+
+      <p id="status"></p>
+
+      <!-- BUTTON BACK -->
+
+      <a href="../home/index.html" class="back-btn">
+        ← Kembali ke Home
+      </a>
+
+    </div>
+
+  </section>
+
+  <script src="script.js"></script>
+
+</body>
+
+</html>
