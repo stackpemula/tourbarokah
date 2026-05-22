@@ -33,36 +33,40 @@ form.addEventListener("submit", async (e) => {
 
   const formData = new FormData();
 
-formData.append("nama", nama);
-formData.append("wa", wa);
-formData.append("desa", desa);
-formData.append("kelompok", kelompok);
-formData.append("jenjang", jenjang);
-formData.append("bukti", bukti);
+  formData.append("nama", nama);
+  formData.append("wa", wa);
+  formData.append("desa", desa);
+  formData.append("kelompok", kelompok);
+  formData.append("jenjang", jenjang);
+  formData.append("bukti", bukti);
 
-await fetch(scriptURL,{
-  method:"POST",
-  body:formData,
-  mode:"no-cors"
-});
+  try {
 
-    // NOMOR ADMIN
+    // KIRIM KE APPS SCRIPT
+
+    await fetch(scriptURL, {
+      method: "POST",
+      body: formData,
+      mode: "no-cors"
+    });
+
+    // ADMIN WA
 
     let adminWA = "";
 
-    if(desa === "Bayongbong"){
+    if (desa === "Bayongbong") {
       adminWA = "6285962359601";
     }
 
-    else if(desa === "Garut Barat"){
+    else if (desa === "Garut Barat") {
       adminWA = "6282289614783";
     }
 
-    else if(desa === "Garut Timur"){
+    else if (desa === "Garut Timur") {
       adminWA = "6282110075381";
     }
 
-    else if(desa === "Garut Utara"){
+    else if (desa === "Garut Utara") {
       adminWA = "62852xxxx";
     }
 
@@ -71,17 +75,21 @@ await fetch(scriptURL,{
     const message =
 `Assalamu'alaikum Admin ${desa}
 
-Saya sudah melakukan pembayaran Tour Barokah.
+Saya sudah melakukan pembayaran Tour Pondok Pesantren.
 
 Nama: ${nama}
 No WA: ${wa}
 Kelompok: ${kelompok}
 Jenjang: ${jenjang}
 
-Alhamdulillahi Jazakumullahu Khoiro.`;
+Terima kasih.`;
+
+    // LINK WHATSAPP
 
     const whatsappURL =
 `https://wa.me/${adminWA}?text=${encodeURIComponent(message)}`;
+
+    // BUKA WA
 
     window.open(whatsappURL, "_blank");
 
@@ -89,7 +97,9 @@ Alhamdulillahi Jazakumullahu Khoiro.`;
 
     form.reset();
 
-  } catch(error){
+  }
+
+  catch(error) {
 
     console.log(error);
 
