@@ -1,7 +1,8 @@
 const scriptURL =
 "https://script.google.com/macros/s/AKfycbwrzIvEnIfJ9Uy7Ow9xbx_40yw_V7S59GqyyJiKqG-AjFj4G7zPXf-MVsFqeghDNeP-gw/exec";
 
-const form = document.getElementById("paymentForm");
+const form =
+document.getElementById("paymentForm");
 
 form.addEventListener("submit", async (e) => {
 
@@ -22,18 +23,15 @@ form.addEventListener("submit", async (e) => {
   const jenjang =
     document.getElementById("jenjang").value;
 
-  const buktiInput =
-    document.getElementById("bukti");
-
   const file =
-    buktiInput.files[0];
+    document.getElementById("bukti").files[0];
 
   const bukti =
     file ? file.name : "";
 
   // FORM DATA
 
-  const formData = new URLSearchParams();
+  const formData = new FormData();
 
   formData.append("nama", nama);
   formData.append("wa", wa);
@@ -44,31 +42,29 @@ form.addEventListener("submit", async (e) => {
 
   try {
 
-    // KIRIM KE SPREADSHEET
+    await fetch(scriptURL,{
+      method:"POST",
+      body:formData
+    });
 
-   await fetch(scriptURL,{
-    method:"POST",
-    mode:"no-cors",
-    body:formData
-});
-    // ADMIN WA
+    // NOMOR ADMIN
 
     let adminWA = "";
 
-    if (desa === "Bayongbong") {
+    if(desa === "Bayongbong"){
       adminWA = "6285962359601";
     }
 
-    else if (desa === "Garut Barat") {
+    else if(desa === "Garut Barat"){
       adminWA = "6282289614783";
     }
 
-    else if (desa === "Garut Timur") {
+    else if(desa === "Garut Timur"){
       adminWA = "6282110075381";
     }
 
-    else if (desa === "Garut Utara") {
-      adminWA = "6281293143251";
+    else if(desa === "Garut Utara"){
+      adminWA = "62852xxxx";
     }
 
     // PESAN
@@ -76,7 +72,7 @@ form.addEventListener("submit", async (e) => {
     const message =
 `Assalamu'alaikum Admin ${desa}
 
-Saya sudah melakukan pembayaran Tour Pondok Pesantren.
+Saya sudah melakukan pembayaran Tour Barokah.
 
 Nama: ${nama}
 No WA: ${wa}
@@ -84,8 +80,6 @@ Kelompok: ${kelompok}
 Jenjang: ${jenjang}
 
 Alhamdulillahi Jazakumullahu Khoiro.`;
-
-    // WHATSAPP
 
     const whatsappURL =
 `https://wa.me/${adminWA}?text=${encodeURIComponent(message)}`;
@@ -96,11 +90,12 @@ Alhamdulillahi Jazakumullahu Khoiro.`;
 
     form.reset();
 
-  } catch(error) {
+  } catch(error){
 
     console.log(error);
 
     alert("Terjadi kesalahan");
+
   }
 
 });
