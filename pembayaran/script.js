@@ -46,11 +46,11 @@ form.addEventListener("submit", async (e) => {
 
     // KIRIM KE SPREADSHEET
 
-    await fetch(scriptURL, {
-      method: "POST",
-      body: formData
-    });
-
+   await fetch(scriptURL,{
+    method:"POST",
+    mode:"no-cors",
+    body:formData
+});
     // ADMIN WA
 
     let adminWA = "";
@@ -68,7 +68,7 @@ form.addEventListener("submit", async (e) => {
     }
 
     else if (desa === "Garut Utara") {
-      adminWA = "62852xxxx";
+      adminWA = "6281293143251";
     }
 
     // PESAN
