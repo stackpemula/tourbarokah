@@ -46,37 +46,3 @@ if(form){
   });
 
 }
-
-/* TOTAL PESERTA */
-
-async function loadTotalPeserta(){
-
-  try{
-
-    const response = await fetch(scriptURL);
-
-    const result = await response.json();
-
-    console.log(result);
-
-    const totalPeserta =
-      document.getElementById('totalPeserta');
-
-    if(totalPeserta){
-
-      totalPeserta.innerText =
-        result.length + ' Peserta';
-
-    }
-
-  }
-
-  catch(error){
-
-    console.log(error);
-
-  }
-
-}
-
-loadTotalPeserta();
