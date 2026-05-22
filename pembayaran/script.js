@@ -1,4 +1,5 @@
-const scriptURL = "https://script.google.com/macros/s/AKfycbwrzIvEnIfJ9Uy7Ow9xbx_40yw_V7S59GqyyJiKqG-AjFj4G7zPXf-MVsFqeghDNeP-gw/exec";
+const scriptURL =
+"https://script.google.com/macros/s/AKfycbwrzIvEnIfJ9Uy7Ow9xbx_40yw_V7S59GqyyJiKqG-AjFj4G7zPXf-MVsFqeghDNeP-gw/exec";
 
 const form = document.getElementById("paymentForm");
 
@@ -6,22 +7,29 @@ form.addEventListener("submit", async (e) => {
 
   e.preventDefault();
 
-  // AMBIL DATA
+  const nama =
+    document.getElementById("nama").value;
 
-  const nama = document.getElementById("nama").value;
-  const wa = document.getElementById("wa").value;
-  const desa = document.getElementById("desa").value;
-  const kelompok = document.getElementById("kelompok").value;
-  const jenjang = document.getElementById("jenjang").value;
+  const wa =
+    document.getElementById("wa").value;
+
+  const desa =
+    document.getElementById("desa").value;
+
+  const kelompok =
+    document.getElementById("kelompok").value;
+
+  const jenjang =
+    document.getElementById("jenjang").value;
 
   const buktiInput =
     document.getElementById("bukti");
 
-  const file = buktiInput.files[0];
+  const file =
+    buktiInput.files[0];
 
-  // sementara simpan nama file
-
-  const bukti = file ? file.name : "";
+  const bukti =
+    file ? file.name : "";
 
   // FORM DATA
 
@@ -34,38 +42,39 @@ form.addEventListener("submit", async (e) => {
   formData.append("jenjang", jenjang);
   formData.append("bukti", bukti);
 
-  try{
+  try {
 
-    // KIRIM KE APPS SCRIPT
+    // KIRIM KE SPREADSHEET
 
-    await fetch(scriptURL,{
-      method:"POST",
-      body:formData
+    await fetch(scriptURL, {
+      method: "POST",
+      body: formData
     });
 
-    // NOMOR ADMIN BERDASARKAN WILAYAH
+    // ADMIN WA
 
     let adminWA = "";
 
-    if(desa === "Bayongbong"){
-    adminWA = "6285962359601";
+    if (desa === "Bayongbong") {
+      adminWA = "6285962359601";
     }
 
-    else if(desa === "Garut Barat"){
-    adminWA = "6282289614783";
+    else if (desa === "Garut Barat") {
+      adminWA = "6282289614783";
     }
 
-    else if(desa === "Garut Timur"){
-    adminWA = "6282110075381";
+    else if (desa === "Garut Timur") {
+      adminWA = "6282110075381";
     }
 
-    else if(desa === "Garut Utara"){
-    adminWA = "628xxxxxxxxxx";
+    else if (desa === "Garut Utara") {
+      adminWA = "62852xxxx";
     }
-    // PESAN OTOMATIS
+
+    // PESAN
 
     const message =
-`Assalamu'alaikum min ${desa}
+`Assalamu'alaikum Admin ${desa}
 
 Saya sudah melakukan pembayaran Tour Pondok Pesantren.
 
@@ -76,12 +85,10 @@ Jenjang: ${jenjang}
 
 Alhamdulillahi Jazakumullahu Khoiro.`;
 
-    // LINK WHATSAPP
+    // WHATSAPP
 
     const whatsappURL =
 `https://wa.me/${adminWA}?text=${encodeURIComponent(message)}`;
-
-    // BUKA WHATSAPP
 
     window.open(whatsappURL, "_blank");
 
@@ -89,7 +96,9 @@ Alhamdulillahi Jazakumullahu Khoiro.`;
 
     form.reset();
 
-  }catch(error){
+  } catch(error) {
+
+    console.log(error);
 
     alert("Terjadi kesalahan");
   }
