@@ -33,19 +33,18 @@ form.addEventListener("submit", async (e) => {
 
   const formData = new FormData();
 
-  formData.append("nama", nama);
-  formData.append("wa", wa);
-  formData.append("desa", desa);
-  formData.append("kelompok", kelompok);
-  formData.append("jenjang", jenjang);
-  formData.append("bukti", bukti);
+formData.append("nama", nama);
+formData.append("wa", wa);
+formData.append("desa", desa);
+formData.append("kelompok", kelompok);
+formData.append("jenjang", jenjang);
+formData.append("bukti", bukti);
 
-  try {
-
-    await fetch(scriptURL,{
-      method:"POST",
-      body:formData
-    });
+await fetch(scriptURL,{
+  method:"POST",
+  body:formData,
+  mode:"no-cors"
+});
 
     // NOMOR ADMIN
 
