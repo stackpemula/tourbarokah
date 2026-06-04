@@ -12,7 +12,6 @@ form.addEventListener("submit", async (e) => {
   const jenjang = document.getElementById("jenjang").value;
 
   const file = document.getElementById("bukti").files[0];
-  const bukti = file ? file.name : "";
 
   // 🔐 VALIDASI NOMOR WA
   if (!wa.startsWith("08") && !wa.startsWith("628")) {
@@ -25,14 +24,30 @@ form.addEventListener("submit", async (e) => {
   button.innerText = "Mengirim...";
   button.disabled = true;
 
-  // Kirim ke Google Sheets
+  // 🔥 KONVERSI FILE → BASE64
+  let fileData = "";
+  let fileName = "";
+
+  if (file) {
+    fileName = file.name;
+
+    const reader = new FileReader();
+
+    fileData = await new Promise((resolve) => {
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Kirim ke Apps Script
   const formData = new URLSearchParams();
   formData.append("nama", nama);
   formData.append("wa", wa);
   formData.append("desa", desa);
   formData.append("kelompok", kelompok);
   formData.append("jenjang", jenjang);
-  formData.append("bukti", bukti);
+  formData.append("bukti", fileName); // nama file
+  formData.append("file", fileData);  // isi file (WAJIB untuk upload)
 
   try {
     const res = await fetch(scriptURL, {
