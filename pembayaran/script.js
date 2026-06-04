@@ -2,32 +2,56 @@ const scriptURL = "https://script.google.com/macros/s/AKfycbw06Wsz8Jpwf77sD0mP-q
 
 const form = document.getElementById("paymentForm");
 
+// ======================
+// SUCCESS MODAL
+// ======================
+
+function showSuccessModal() {
+  const modal = document.getElementById("successModal");
+  modal.classList.add("show");
+}
+
+// ======================
+// FORM SUBMIT
+// ======================
+
 form.addEventListener("submit", async (e) => {
+
   e.preventDefault();
 
-  const nama = document.getElementById("nama").value;
-  const wa = document.getElementById("wa").value;
+  const nama = document.getElementById("nama").value.trim();
+  const wa = document.getElementById("wa").value.trim();
   const desa = document.getElementById("desa").value;
-  const kelompok = document.getElementById("kelompok").value;
+  const kelompok = document.getElementById("kelompok").value.trim();
   const jenjang = document.getElementById("jenjang").value;
-
   const file = document.getElementById("bukti").files[0];
 
-  // 🔐 VALIDASI WA
+  // ======================
+  // VALIDASI WA
+  // ======================
+
   if (!wa.startsWith("08") && !wa.startsWith("628")) {
-    alert("Nomor WhatsApp tidak valid!");
+    alert("Nomor WhatsApp tidak valid!\nGunakan format 08xxxxxxxxxx atau 628xxxxxxxxxx");
     return;
   }
 
-  // 🔄 LOADING
+  // ======================
+  // LOADING BUTTON
+  // ======================
+
   const button = form.querySelector("button");
+
   button.innerText = "Mengirim...";
   button.disabled = true;
 
-  // 🚀 Buka tab kosong lebih awal agar tidak diblokir browser
+  // ======================
+  // BUKA TAB WA LEBIH AWAL
+  // ======================
+
   let waWindow = window.open("", "_blank");
 
   try {
+
     const formData = new FormData();
 
     formData.append("nama", nama);
@@ -49,18 +73,36 @@ form.addEventListener("submit", async (e) => {
 
     console.log("RESPONSE:", result);
 
-    // ❗ hanya lanjut jika server sukses
+    // ======================
+    // VALIDASI RESPONSE
+    // ======================
+
     if (!result.includes("SUCCESS")) {
       throw new Error(result);
     }
 
-    // WA routing
+    // ======================
+    // ROUTING ADMIN WA
+    // ======================
+
     let adminWA = "";
 
-    if (desa === "Bayongbong") adminWA = "6285962359601";
-    else if (desa === "Garut Barat") adminWA = "6282289614783";
-    else if (desa === "Garut Timur") adminWA = "6281293143251";
-    else if (desa === "Garut Utara") adminWA = "6281210759592";
+    if (desa === "Bayongbong") {
+      adminWA = "6285962359601";
+    }
+    else if (desa === "Garut Barat") {
+      adminWA = "6282289614783";
+    }
+    else if (desa === "Garut Timur") {
+      adminWA = "6281293143251";
+    }
+    else if (desa === "Garut Utara") {
+      adminWA = "6281210759592";
+    }
+
+    // ======================
+    // PESAN WA
+    // ======================
 
     const message = `📩 KONFIRMASI PEMBAYARAN
 
@@ -71,28 +113,48 @@ Jenjang: ${jenjang}
 Desa: ${desa}
 
 Alhamdulillahi Jazakumullahu Khoiro 😊
-Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi admin.`;
+Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi dari admin.`;
 
-    // 🚀 Arahkan tab yang sudah dibuka ke WhatsApp
-    if (waWindow) {
-      waWindow.location.href =
-        `https://wa.me/${adminWA}?text=${encodeURIComponent(message)}`;
-    }
+    // ======================
+    // TAMPILKAN ANIMASI SUKSES
+    // ======================
 
-    alert("Data berhasil dikirim.");
-    form.reset();
+    showSuccessModal();
 
-  } catch (err) {
+    // ======================
+    // REDIRECT WA SETELAH 2 DETIK
+    // ======================
+
+    setTimeout(() => {
+
+      if (waWindow) {
+        waWindow.location.href =
+          `https://wa.me/${adminWA}?text=${encodeURIComponent(message)}`;
+      }
+
+      form.reset();
+
+    }, 2000);
+
+  }
+
+  catch (err) {
+
     console.error(err);
 
-    // tutup tab kosong jika gagal
     if (waWindow) {
       waWindow.close();
     }
 
-    alert("Gagal mengirim data: " + err.message);
-  } finally {
+    alert("Gagal mengirim data.\n\n" + err.message);
+
+  }
+
+  finally {
+
     button.innerText = "Kirim Pembayaran";
     button.disabled = false;
+
   }
+
 });
