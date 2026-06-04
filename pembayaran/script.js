@@ -44,12 +44,6 @@ form.addEventListener("submit", async (e) => {
   button.innerText = "Mengirim...";
   button.disabled = true;
 
-  // ======================
-  // BUKA TAB WA LEBIH AWAL
-  // ======================
-
-  let waWindow = window.open("", "_blank");
-
   try {
 
     const formData = new FormData();
@@ -121,18 +115,16 @@ Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi dari admin.`;
 
     showSuccessModal();
 
+    form.reset();
+
     // ======================
-    // REDIRECT WA SETELAH 2 DETIK
+    // REDIRECT KE WA
     // ======================
 
     setTimeout(() => {
 
-      if (waWindow) {
-        waWindow.location.href =
-          `https://wa.me/${adminWA}?text=${encodeURIComponent(message)}`;
-      }
-
-      form.reset();
+      window.location.href =
+        `https://wa.me/${adminWA}?text=${encodeURIComponent(message)}`;
 
     }, 2000);
 
@@ -141,10 +133,6 @@ Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi dari admin.`;
   catch (err) {
 
     console.error(err);
-
-    if (waWindow) {
-      waWindow.close();
-    }
 
     alert("Gagal mengirim data.\n\n" + err.message);
 
