@@ -24,6 +24,9 @@ form.addEventListener("submit", async (e) => {
   button.innerText = "Mengirim...";
   button.disabled = true;
 
+  // 🚀 Buka tab kosong lebih awal agar tidak diblokir browser
+  let waWindow = window.open("", "_blank");
+
   try {
     const formData = new FormData();
 
@@ -33,8 +36,9 @@ form.addEventListener("submit", async (e) => {
     formData.append("kelompok", kelompok);
     formData.append("jenjang", jenjang);
 
-    // 🔥 LANGSUNG KIRIM FILE (BUKAN BASE64)
-    formData.append("file", file);
+    if (file) {
+      formData.append("file", file);
+    }
 
     const res = await fetch(scriptURL, {
       method: "POST",
@@ -44,7 +48,11 @@ form.addEventListener("submit", async (e) => {
     const result = await res.text();
 
     console.log("RESPONSE:", result);
-    alert("Server: " + result);
+
+    // ❗ hanya lanjut jika server sukses
+    if (!result.includes("SUCCESS")) {
+      throw new Error(result);
+    }
 
     // WA routing
     let adminWA = "";
@@ -65,13 +73,24 @@ Desa: ${desa}
 Alhamdulillahi Jazakumullahu Khoiro 😊
 Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi admin.`;
 
-    window.open(`https://wa.me/${adminWA}?text=${encodeURIComponent(message)}`, "_blank");
+    // 🚀 Arahkan tab yang sudah dibuka ke WhatsApp
+    if (waWindow) {
+      waWindow.location.href =
+        `https://wa.me/${adminWA}?text=${encodeURIComponent(message)}`;
+    }
 
+    alert("Data berhasil dikirim.");
     form.reset();
 
   } catch (err) {
-    console.log(err);
-    alert("Gagal mengirim data");
+    console.error(err);
+
+    // tutup tab kosong jika gagal
+    if (waWindow) {
+      waWindow.close();
+    }
+
+    alert("Gagal mengirim data: " + err.message);
   } finally {
     button.innerText = "Kirim Pembayaran";
     button.disabled = false;
