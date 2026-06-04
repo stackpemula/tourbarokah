@@ -5,18 +5,22 @@ const form = document.getElementById("paymentForm");
 // ======================
 // SUCCESS MODAL
 // ======================
-
 function showSuccessModal() {
   const modal = document.getElementById("successModal");
   modal.classList.add("show");
 }
 
 // ======================
+// ERROR MODAL (opsional fallback)
+// ======================
+function showError(msg) {
+  alert("❌ Gagal mengirim data:\n\n" + msg);
+}
+
+// ======================
 // FORM SUBMIT
 // ======================
-
 form.addEventListener("submit", async (e) => {
-
   e.preventDefault();
 
   const nama = document.getElementById("nama").value.trim();
@@ -29,54 +33,43 @@ form.addEventListener("submit", async (e) => {
   // ======================
   // VALIDASI WA
   // ======================
-
   if (!wa.startsWith("08") && !wa.startsWith("628")) {
-    alert("Nomor WhatsApp tidak valid!\nGunakan format 08xxxxxxxxxx atau 628xxxxxxxxxx");
+    alert("Nomor WhatsApp tidak valid!");
     return;
   }
 
   // ======================
   // VALIDASI FILE
   // ======================
-
   if (!file) {
-    alert("Silakan upload bukti transfer terlebih dahulu.");
+    alert("Upload bukti transfer wajib!");
     return;
   }
 
-  // ======================
-  // LOADING BUTTON
-  // ======================
-
   const button = form.querySelector("button");
-
   button.innerText = "Mengirim...";
   button.disabled = true;
+
+  let controller = new AbortController();
+  let timeout = setTimeout(() => controller.abort(), 20000); // 20 detik timeout
 
   try {
 
     // ======================
     // KONVERSI GAMBAR KE BASE64
     // ======================
-
     const fileData = await new Promise((resolve, reject) => {
-
       const reader = new FileReader();
 
-      reader.onload = () => {
-        resolve(reader.result.split(",")[1]);
-      };
-
+      reader.onload = () => resolve(reader.result.split(",")[1]);
       reader.onerror = reject;
 
       reader.readAsDataURL(file);
-
     });
 
     // ======================
     // KIRIM DATA
     // ======================
-
     const formData = new URLSearchParams();
 
     formData.append("nama", nama);
@@ -88,44 +81,39 @@ form.addEventListener("submit", async (e) => {
     formData.append("file", fileData);
     formData.append("fileName", file.name);
 
+    // ======================
+    // FETCH + TIMEOUT HANDLING
+    // ======================
     const res = await fetch(scriptURL, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      body: formData
+      body: formData,
+      signal: controller.signal
     });
 
-    const result = await res.text();
+    clearTimeout(timeout);
 
+    const result = await res.text();
     console.log("SERVER RESPONSE:", result);
 
-    if (!result.includes("SUCCESS")) {
-      throw new Error(result);
+    // ======================
+    // VALIDASI RESPONSE SERVER
+    // ======================
+    if (!result || !result.includes("SUCCESS")) {
+      throw new Error(result || "Response kosong dari server");
     }
 
     // ======================
-    // ROUTING ADMIN WA
+    // ROUTING WA ADMIN
     // ======================
-
     let adminWA = "";
 
-    if (desa === "Bayongbong") {
-      adminWA = "6285962359601";
-    }
-    else if (desa === "Garut Barat") {
-      adminWA = "6282289614783";
-    }
-    else if (desa === "Garut Timur") {
-      adminWA = "6281293143251";
-    }
-    else if (desa === "Garut Utara") {
-      adminWA = "6281210759592";
-    }
-
-    // ======================
-    // PESAN WA
-    // ======================
+    if (desa === "Bayongbong") adminWA = "6285962359601";
+    else if (desa === "Garut Barat") adminWA = "6282289614783";
+    else if (desa === "Garut Timur") adminWA = "6281293143251";
+    else if (desa === "Garut Utara") adminWA = "6281210759592";
 
     const message = `📩 KONFIRMASI PEMBAYARAN
 
@@ -139,39 +127,40 @@ Alhamdulillahi Jazakumullahu Khoiro 😊
 Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi dari admin.`;
 
     // ======================
-    // TAMPILKAN MODAL
+    // SUCCESS UI
     // ======================
-
     showSuccessModal();
-
     form.reset();
 
     // ======================
     // REDIRECT WA
     // ======================
-
     setTimeout(() => {
-
       window.location.href =
         `https://wa.me/${adminWA}?text=${encodeURIComponent(message)}`;
-
     }, 2000);
 
-  }
+  } catch (err) {
 
-  catch (err) {
+    console.error("ERROR:", err);
 
-    console.error(err);
+    // ======================
+    // 3 KEMUNGKINAN ERROR
+    // ======================
 
-    alert(
-      "Gagal mengirim data.\n\n" +
-      err.message
-    );
+    if (err.name === "AbortError") {
+      showError("Request timeout (server terlalu lama merespon)");
+    }
+    else if (err.message.includes("FAILED") || err.message.includes("ERROR")) {
+      showError("Server Apps Script error:\n" + err.message);
+    }
+    else {
+      showError("Koneksi gagal / jaringan bermasalah");
+    }
 
-  }
+  } finally {
 
-  finally {
-
+    clearTimeout(timeout);
     button.innerText = "Kirim Pembayaran";
     button.disabled = false;
 
