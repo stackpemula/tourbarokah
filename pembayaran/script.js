@@ -46,7 +46,7 @@ alert("Server: " + result); // ⬅️ WAJIB
     if (desa === "Bayongbong") adminWA = "6285962359601";
     else if (desa === "Garut Barat") adminWA = "6282289614783";
     else if (desa === "Garut Timur") adminWA = "6282110075381";
-    else if (desa === "Garut Utara") adminWA = "62852xxxx";
+    else if (desa === "Garut Utara") adminWA = "6281210759592";
 
     const message =
 `📩 KONFIRMASI PEMBAYARAN
@@ -55,7 +55,10 @@ Nama: ${nama}
 WA: ${wa}
 Kelompok: ${kelompok}
 Jenjang: ${jenjang}
-Desa: ${desa}`;
+Desa: ${desa}
+
+Alhamdulillahi Jazakumullahu Khoiro 😊
+Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi dari admin.`;
 
     window.open(`https://wa.me/${adminWA}?text=${encodeURIComponent(message)}`, "_blank");
 
