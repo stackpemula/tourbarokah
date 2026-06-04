@@ -13,48 +13,31 @@ form.addEventListener("submit", async (e) => {
 
   const file = document.getElementById("bukti").files[0];
 
-  // 🔐 VALIDASI NOMOR WA
+  // 🔐 VALIDASI WA
   if (!wa.startsWith("08") && !wa.startsWith("628")) {
-    alert("Nomor WhatsApp tidak valid! Gunakan format 08xxxx atau 628xxxx");
+    alert("Nomor WhatsApp tidak valid!");
     return;
   }
 
-  // 🔄 LOADING BUTTON
+  // 🔄 LOADING
   const button = form.querySelector("button");
   button.innerText = "Mengirim...";
   button.disabled = true;
 
-  // 🔥 KONVERSI FILE → BASE64
-  let fileData = "";
-  let fileName = "";
-
-  if (file) {
-    fileName = file.name;
-
-    const reader = new FileReader();
-
-    fileData = await new Promise((resolve) => {
-      reader.onload = () => resolve(reader.result.split(",")[1]);
-      reader.readAsDataURL(file);
-    });
-  }
-
-  // Kirim ke Apps Script
-  const formData = new URLSearchParams();
-  formData.append("nama", nama);
-  formData.append("wa", wa);
-  formData.append("desa", desa);
-  formData.append("kelompok", kelompok);
-  formData.append("jenjang", jenjang);
-  formData.append("bukti", fileName); // nama file
-  formData.append("file", fileData);  // isi file (WAJIB untuk upload)
-
   try {
+    const formData = new FormData();
+
+    formData.append("nama", nama);
+    formData.append("wa", wa);
+    formData.append("desa", desa);
+    formData.append("kelompok", kelompok);
+    formData.append("jenjang", jenjang);
+
+    // 🔥 LANGSUNG KIRIM FILE (BUKAN BASE64)
+    formData.append("file", file);
+
     const res = await fetch(scriptURL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
       body: formData
     });
 
@@ -63,7 +46,7 @@ form.addEventListener("submit", async (e) => {
     console.log("RESPONSE:", result);
     alert("Server: " + result);
 
-    // Routing admin WA
+    // WA routing
     let adminWA = "";
 
     if (desa === "Bayongbong") adminWA = "6285962359601";
@@ -71,7 +54,6 @@ form.addEventListener("submit", async (e) => {
     else if (desa === "Garut Timur") adminWA = "6281293143251";
     else if (desa === "Garut Utara") adminWA = "6281210759592";
 
-    // Pesan WhatsApp
     const message = `📩 KONFIRMASI PEMBAYARAN
 
 Nama: ${nama}
@@ -81,22 +63,16 @@ Jenjang: ${jenjang}
 Desa: ${desa}
 
 Alhamdulillahi Jazakumullahu Khoiro 😊
-Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi dari admin.`;
+Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi admin.`;
 
-    // Kirim ke WhatsApp
-    window.open(
-      `https://wa.me/${adminWA}?text=${encodeURIComponent(message)}`,
-      "_blank"
-    );
+    window.open(`https://wa.me/${adminWA}?text=${encodeURIComponent(message)}`, "_blank");
 
-    alert("Data berhasil dikirim & diteruskan ke admin WhatsApp");
     form.reset();
 
   } catch (err) {
     console.log(err);
     alert("Gagal mengirim data");
   } finally {
-    // 🔁 KEMBALIKAN BUTTON NORMAL
     button.innerText = "Kirim Pembayaran";
     button.disabled = false;
   }
