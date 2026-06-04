@@ -28,14 +28,18 @@ form.addEventListener("submit", async (e) => {
   try {
 
     const res = await fetch(scriptURL, {
-      method: "POST",
-      body: formData
-    });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded"
+  },
+  body: formData
+});
 
-   const result = await res.text();
-   console.log("HASIL:", result);
-   alert(result);
-   
+const result = await res.text();
+
+console.log("RESPONSE:", result);
+alert("Server: " + result); // ⬅️ WAJIB
+
     // WA routing
     let adminWA = "";
 
