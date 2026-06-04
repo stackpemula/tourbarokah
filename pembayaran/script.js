@@ -3,7 +3,6 @@ const scriptURL = "https://script.google.com/macros/s/AKfycbw06Wsz8Jpwf77sD0mP-q
 const form = document.getElementById("paymentForm");
 
 form.addEventListener("submit", async (e) => {
-
   e.preventDefault();
 
   const nama = document.getElementById("nama").value;
@@ -15,9 +14,8 @@ form.addEventListener("submit", async (e) => {
   const file = document.getElementById("bukti").files[0];
   const bukti = file ? file.name : "";
 
-  // ❗ WAJIB URLSearchParams (bukan FormData)
+  // Kirim ke Google Sheets
   const formData = new URLSearchParams();
-
   formData.append("nama", nama);
   formData.append("wa", wa);
   formData.append("desa", desa);
@@ -26,30 +24,29 @@ form.addEventListener("submit", async (e) => {
   formData.append("bukti", bukti);
 
   try {
-
     const res = await fetch(scriptURL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/x-www-form-urlencoded"
-  },
-  body: formData
-});
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: formData
+    });
 
-const result = await res.text();
+    const result = await res.text();
 
-console.log("RESPONSE:", result);
-alert("Server: " + result); // ⬅️ WAJIB
+    console.log("RESPONSE:", result);
+    alert("Server: " + result);
 
-    // WA routing
+    // Routing admin WA
     let adminWA = "";
 
-    if (desa === "Bayongbong") adminWA = "6285962359601"; 
+    if (desa === "Bayongbong") adminWA = "6285962359601";
     else if (desa === "Garut Barat") adminWA = "6282289614783";
     else if (desa === "Garut Timur") adminWA = "6281293143251";
     else if (desa === "Garut Utara") adminWA = "6281210759592";
 
-    const message =
-`📩 KONFIRMASI PEMBAYARAN
+    // Pesan WhatsApp
+    const message = `📩 KONFIRMASI PEMBAYARAN
 
 Nama: ${nama}
 WA: ${wa}
@@ -60,7 +57,11 @@ Desa: ${desa}
 Alhamdulillahi Jazakumullahu Khoiro 😊
 Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi dari admin.`;
 
-    window.open(`https://wa.me/${adminWA}?text=${encodeURIComponent(message)}`, "_blank");
+    // Kirim ke WhatsApp
+    window.open(
+      `https://wa.me/${adminWA}?text=${encodeURIComponent(message)}`,
+      "_blank"
+    );
 
     alert("Berhasil dikirim");
     form.reset();
@@ -69,5 +70,4 @@ Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi dari admin.`;
     console.log(err);
     alert("Gagal mengirim data");
   }
-
 });
