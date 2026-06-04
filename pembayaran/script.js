@@ -32,9 +32,10 @@ form.addEventListener("submit", async (e) => {
       body: formData
     });
 
-    const result = await res.text();
-    console.log(result);
-
+   const result = await res.text();
+   console.log("HASIL:", result);
+   alert(result);
+   
     // WA routing
     let adminWA = "";
 
