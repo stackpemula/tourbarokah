@@ -1,4 +1,4 @@
-const scriptURL = "https://script.google.com/macros/s/AKfycbw06Wsz8Jpwf77sD0mP-qv2yXEVabIchFARB4qxSlohIsuSmIk2iB8oPvW0HbVcX0oE/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbzwWUmvyBBDvNfKkohUbBWimHKvRUmrAx6iOLyc7hpLIYnT4VetdrUcEGiXsjwgQVqlrQ/exec";
 
 const form = document.getElementById("paymentForm");
 
