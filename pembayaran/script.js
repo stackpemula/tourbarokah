@@ -14,6 +14,17 @@ form.addEventListener("submit", async (e) => {
   const file = document.getElementById("bukti").files[0];
   const bukti = file ? file.name : "";
 
+  // 🔐 VALIDASI NOMOR WA
+  if (!wa.startsWith("08") && !wa.startsWith("628")) {
+    alert("Nomor WhatsApp tidak valid! Gunakan format 08xxxx atau 628xxxx");
+    return;
+  }
+
+  // 🔄 LOADING BUTTON
+  const button = form.querySelector("button");
+  button.innerText = "Mengirim...";
+  button.disabled = true;
+
   // Kirim ke Google Sheets
   const formData = new URLSearchParams();
   formData.append("nama", nama);
@@ -63,11 +74,15 @@ Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi dari admin.`;
       "_blank"
     );
 
-    alert("Berhasil dikirim");
+    alert("Data berhasil dikirim & diteruskan ke admin WhatsApp");
     form.reset();
 
   } catch (err) {
     console.log(err);
     alert("Gagal mengirim data");
+  } finally {
+    // 🔁 KEMBALIKAN BUTTON NORMAL
+    button.innerText = "Kirim Pembayaran";
+    button.disabled = false;
   }
 });
