@@ -1,16 +1,22 @@
-const scriptURL = "https://script.google.com/macros/s/AKfycbwzwKUJsKbXvE14Nl-hcPfWeZSwMjib6Sg7ZbT0CbQKXv4OPFdLh9Skx0nEGlcK2w5qFQ/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbzwWUmvyBBDvNfKkohUbBWimHKvRUmrAx6iOLyc7hpLIYnT4VetdrUcEGiXsjwgQVqlrQ/exec";
 
 const form = document.getElementById("paymentForm");
 
+// ======================
+// SUCCESS MODAL
+// ======================
+
 function showSuccessModal() {
-  document.getElementById("successModal").classList.add("show");
+  const modal = document.getElementById("successModal");
+  modal.classList.add("show");
 }
 
-function showError(msg) {
-  alert("❌ Gagal mengirim data:\n\n" + msg);
-}
+// ======================
+// FORM SUBMIT
+// ======================
 
 form.addEventListener("submit", async (e) => {
+
   e.preventDefault();
 
   const nama = document.getElementById("nama").value.trim();
@@ -20,44 +26,68 @@ form.addEventListener("submit", async (e) => {
   const jenjang = document.getElementById("jenjang").value;
   const file = document.getElementById("bukti").files[0];
 
+  // ======================
+  // VALIDASI WA
+  // ======================
+
   if (!wa.startsWith("08") && !wa.startsWith("628")) {
-    showError("Nomor WhatsApp tidak valid!");
+    alert("Nomor WhatsApp tidak valid!\nGunakan format 08xxxxxxxxxx atau 628xxxxxxxxxx");
     return;
   }
+
+  // ======================
+  // VALIDASI FILE
+  // ======================
 
   if (!file) {
-    showError("Upload bukti wajib!");
+    alert("Silakan upload bukti transfer terlebih dahulu.");
     return;
   }
 
+  // ======================
+  // LOADING BUTTON
+  // ======================
+
   const button = form.querySelector("button");
+
   button.innerText = "Mengirim...";
   button.disabled = true;
 
   try {
 
     // ======================
-    // CONVERT IMAGE TO BASE64
+    // KONVERSI GAMBAR KE BASE64
     // ======================
+
     const fileData = await new Promise((resolve, reject) => {
+
       const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(",")[1]);
+
+      reader.onload = () => {
+        resolve(reader.result.split(",")[1]);
+      };
+
       reader.onerror = reject;
+
       reader.readAsDataURL(file);
+
     });
 
+    // ======================
+    // KIRIM DATA
+    // ======================
+
     const formData = new URLSearchParams();
+
     formData.append("nama", nama);
     formData.append("wa", wa);
     formData.append("desa", desa);
     formData.append("kelompok", kelompok);
     formData.append("jenjang", jenjang);
+
     formData.append("file", fileData);
     formData.append("fileName", file.name);
 
-    // ======================
-    // SEND TO APPS SCRIPT
-    // ======================
     const res = await fetch(scriptURL, {
       method: "POST",
       headers: {
@@ -67,6 +97,7 @@ form.addEventListener("submit", async (e) => {
     });
 
     const result = await res.text();
+
     console.log("SERVER RESPONSE:", result);
 
     if (!result.includes("SUCCESS")) {
@@ -74,14 +105,27 @@ form.addEventListener("submit", async (e) => {
     }
 
     // ======================
-    // WA ROUTING
+    // ROUTING ADMIN WA
     // ======================
+
     let adminWA = "";
 
-    if (desa === "Bayongbong") adminWA = "6285962359601";
-    else if (desa === "Garut Barat") adminWA = "6282289614783";
-    else if (desa === "Garut Timur") adminWA = "6281293143251";
-    else if (desa === "Garut Utara") adminWA = "6281210759592";
+    if (desa === "Bayongbong") {
+      adminWA = "6285962359601";
+    }
+    else if (desa === "Garut Barat") {
+      adminWA = "6282289614783";
+    }
+    else if (desa === "Garut Timur") {
+      adminWA = "6281293143251";
+    }
+    else if (desa === "Garut Utara") {
+      adminWA = "6281210759592";
+    }
+
+    // ======================
+    // PESAN WA
+    // ======================
 
     const message = `📩 KONFIRMASI PEMBAYARAN
 
@@ -89,22 +133,48 @@ Nama: ${nama}
 WA: ${wa}
 Kelompok: ${kelompok}
 Jenjang: ${jenjang}
-Desa: ${desa}`;
+Desa: ${desa}
+
+Alhamdulillahi Jazakumullahu Khoiro 😊
+Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi dari admin.`;
+
+    // ======================
+    // TAMPILKAN MODAL
+    // ======================
 
     showSuccessModal();
+
     form.reset();
 
+    // ======================
+    // REDIRECT WA
+    // ======================
+
     setTimeout(() => {
+
       window.location.href =
         `https://wa.me/${adminWA}?text=${encodeURIComponent(message)}`;
-    }, 1500);
 
-  } catch (err) {
+    }, 2000);
+
+  }
+
+  catch (err) {
 
     console.error(err);
-    showError("Gagal kirim ke server:\n" + err.message);
+
+    alert(
+      "Gagal mengirim data.\n\n" +
+      err.message
+    );
+
+  }
+
+  finally {
 
     button.innerText = "Kirim Pembayaran";
     button.disabled = false;
+
   }
+
 });
