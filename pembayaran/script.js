@@ -21,21 +21,12 @@ form.addEventListener("submit", async (e) => {
   const desa = document.getElementById("desa").value;
   const kelompok = document.getElementById("kelompok").value.trim();
   const jenjang = document.getElementById("jenjang").value;
-  const file = document.getElementById("bukti").files[0];
 
   // ======================
   // VALIDASI WA
   // ======================
   if (!wa.startsWith("08") && !wa.startsWith("628")) {
     alert("Nomor WhatsApp tidak valid!\nGunakan format 08xxxxxxxxxx atau 628xxxxxxxxxx");
-    return;
-  }
-
-  // ======================
-  // VALIDASI FILE
-  // ======================
-  if (!file) {
-    alert("Upload bukti pembayaran wajib!");
     return;
   }
 
@@ -49,17 +40,7 @@ form.addEventListener("submit", async (e) => {
   try {
 
     // ======================
-    // CONVERT FILE → BASE64
-    // ======================
-    const fileData = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(",")[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-
-    // ======================
-    // SEND TO APPS SCRIPT
+    // KIRIM DATA KE APPS SCRIPT
     // ======================
     const formData = new URLSearchParams();
 
@@ -69,11 +50,11 @@ form.addEventListener("submit", async (e) => {
     formData.append("kelompok", kelompok);
     formData.append("jenjang", jenjang);
 
-    formData.append("file", fileData);
-    formData.append("fileName", file.name);
-
     const res = await fetch(scriptURL, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
       body: formData
     });
 
@@ -88,7 +69,7 @@ form.addEventListener("submit", async (e) => {
     }
 
     // ======================
-    // ROUTING ADMIN WA
+    // ROUTING WA ADMIN
     // ======================
     let adminWA = "";
 
@@ -98,7 +79,7 @@ form.addEventListener("submit", async (e) => {
     else if (desa === "Garut Utara") adminWA = "6281210759592";
 
     // ======================
-    // PESAN WA
+    // PESAN WHATSAPP
     // ======================
     const message = `📩 KONFIRMASI PEMBAYARAN
 
@@ -118,7 +99,7 @@ Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi dari admin.`;
     form.reset();
 
     // ======================
-    // REDIRECT WA
+    // REDIRECT WHATSAPP
     // ======================
     setTimeout(() => {
       window.location.href =
