@@ -11,7 +11,7 @@ function showSuccessModal() {
 }
 
 // ======================
-// ERROR MODAL (opsional fallback)
+// ERROR MODAL
 // ======================
 function showError(msg) {
   alert("❌ Gagal mengirim data:\n\n" + msg);
@@ -34,7 +34,7 @@ form.addEventListener("submit", async (e) => {
   // VALIDASI WA
   // ======================
   if (!wa.startsWith("08") && !wa.startsWith("628")) {
-    alert("Nomor WhatsApp tidak valid!");
+    showError("Nomor WhatsApp tidak valid!");
     return;
   }
 
@@ -42,7 +42,7 @@ form.addEventListener("submit", async (e) => {
   // VALIDASI FILE
   // ======================
   if (!file) {
-    alert("Upload bukti transfer wajib!");
+    showError("Upload bukti transfer wajib!");
     return;
   }
 
@@ -50,13 +50,16 @@ form.addEventListener("submit", async (e) => {
   button.innerText = "Mengirim...";
   button.disabled = true;
 
-  let controller = new AbortController();
-  let timeout = setTimeout(() => controller.abort(), 20000); // 20 detik timeout
+  let timeout = setTimeout(() => {
+    showError("Server timeout (terlalu lama merespon)");
+    button.innerText = "Kirim Pembayaran";
+    button.disabled = false;
+  }, 20000);
 
   try {
 
     // ======================
-    // KONVERSI GAMBAR KE BASE64
+    // KONVERSI FILE → BASE64
     // ======================
     const fileData = await new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -77,32 +80,27 @@ form.addEventListener("submit", async (e) => {
     formData.append("desa", desa);
     formData.append("kelompok", kelompok);
     formData.append("jenjang", jenjang);
-
     formData.append("file", fileData);
     formData.append("fileName", file.name);
 
-    // ======================
-    // FETCH + TIMEOUT HANDLING
-    // ======================
     const res = await fetch(scriptURL, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      body: formData,
-      signal: controller.signal
+      body: formData
     });
 
+    const result = await res.text();
     clearTimeout(timeout);
 
-    const result = await res.text();
     console.log("SERVER RESPONSE:", result);
 
     // ======================
-    // VALIDASI RESPONSE SERVER
+    // VALIDASI RESPONSE
     // ======================
     if (!result || !result.includes("SUCCESS")) {
-      throw new Error(result || "Response kosong dari server");
+      throw new Error(result || "Server tidak merespon SUCCESS");
     }
 
     // ======================
@@ -142,28 +140,12 @@ Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi dari admin.`;
 
   } catch (err) {
 
-    console.error("ERROR:", err);
-
-    // ======================
-    // 3 KEMUNGKINAN ERROR
-    // ======================
-
-    if (err.name === "AbortError") {
-      showError("Request timeout (server terlalu lama merespon)");
-    }
-    else if (err.message.includes("FAILED") || err.message.includes("ERROR")) {
-      showError("Server Apps Script error:\n" + err.message);
-    }
-    else {
-      showError("Koneksi gagal / jaringan bermasalah");
-    }
-
-  } finally {
-
     clearTimeout(timeout);
+    console.error(err);
+
+    showError("Error server / jaringan:\n" + err.message);
+
     button.innerText = "Kirim Pembayaran";
     button.disabled = false;
-
   }
-
 });
