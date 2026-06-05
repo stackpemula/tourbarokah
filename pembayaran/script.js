@@ -36,15 +36,6 @@ form.addEventListener("submit", async (e) => {
   }
 
   // ======================
-  // VALIDASI FILE
-  // ======================
-
-  if (!file) {
-    alert("Silakan upload bukti transfer terlebih dahulu.");
-    return;
-  }
-
-  // ======================
   // LOADING BUTTON
   // ======================
 
@@ -55,29 +46,7 @@ form.addEventListener("submit", async (e) => {
 
   try {
 
-    // ======================
-    // KONVERSI GAMBAR KE BASE64
-    // ======================
-
-    const fileData = await new Promise((resolve, reject) => {
-
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        resolve(reader.result.split(",")[1]);
-      };
-
-      reader.onerror = reject;
-
-      reader.readAsDataURL(file);
-
-    });
-
-    // ======================
-    // KIRIM DATA
-    // ======================
-
-    const formData = new URLSearchParams();
+    const formData = new FormData();
 
     formData.append("nama", nama);
     formData.append("wa", wa);
@@ -85,20 +54,23 @@ form.addEventListener("submit", async (e) => {
     formData.append("kelompok", kelompok);
     formData.append("jenjang", jenjang);
 
-    formData.append("file", fileData);
-    formData.append("fileName", file.name);
+    if (file) {
+      formData.append("file", file);
+    }
 
     const res = await fetch(scriptURL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
       body: formData
     });
 
     const result = await res.text();
 
-    console.log("SERVER RESPONSE:", result);
+    console.log("RESPONSE:", result);
+    alert("SERVER RESPONSE:\n\n" + result);
+
+    // ======================
+    // VALIDASI RESPONSE
+    // ======================
 
     if (!result.includes("SUCCESS")) {
       throw new Error(result);
@@ -139,7 +111,7 @@ Alhamdulillahi Jazakumullahu Khoiro 😊
 Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi dari admin.`;
 
     // ======================
-    // TAMPILKAN MODAL
+    // TAMPILKAN ANIMASI SUKSES
     // ======================
 
     showSuccessModal();
@@ -147,7 +119,7 @@ Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi dari admin.`;
     form.reset();
 
     // ======================
-    // REDIRECT WA
+    // REDIRECT KE WA
     // ======================
 
     setTimeout(() => {
@@ -163,10 +135,7 @@ Pembayaran kamu sudah kami terima, silakan tunggu konfirmasi dari admin.`;
 
     console.error(err);
 
-    alert(
-      "Gagal mengirim data.\n\n" +
-      err.message
-    );
+    alert("Gagal mengirim data.\n\n" + err.message);
 
   }
 
